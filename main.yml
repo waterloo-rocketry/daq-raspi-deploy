@@ -1,0 +1,30 @@
+- name: Main
+  hosts: vms
+  vars:
+    swap_size_mb: 1024
+    git_user_email: "contact@waterloorocketry.com"
+    git_user_name: "Waterloo Rocketry"
+
+  roles:
+    - role: waterloorocketry.daq
+
+  tasks:
+    - name: Initial setup
+      ansible.builtin.include_tasks:
+        file: tasks/initial_setup.yml
+
+    - name: SWAP
+      ansible.builtin.include_tasks:
+        file: tasks/swap.yml
+
+    - name: GIT
+      ansible.builtin.include_tasks:
+        file: tasks/git.yml
+
+    - name: SSH
+      ansible.builtin.include_tasks:
+        file: tasks/ssh.yml
+
+    - name: Docker
+      ansible.builtin.include_tasks:
+        file: tasks/docker.yml
