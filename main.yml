@@ -25,6 +25,10 @@
       ansible.builtin.include_tasks:
         file: tasks/ssh.yml
 
+    - name: NetworkManager
+      ansible.builtin.include_tasks:
+        file: tasks/networkmanager.yml
+
     - name: Docker
       ansible.builtin.include_tasks:
         file: tasks/docker.yml
