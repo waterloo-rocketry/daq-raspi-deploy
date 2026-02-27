@@ -55,7 +55,7 @@
   become: true
   community.general.nmcli:
     conn_name: "Wired Ethernet"
-    ifname: eth0
+    ifname: "*"
     type: ethernet
     method4: auto
     autoconnect: true
@@ -66,16 +66,11 @@
   become: true
   community.general.nmcli:
     conn_name: "UniversityOfWaterloo"
+    ifname: "*"
     type: wifi
     wifi:
       ssid: "UniversityOfWaterloo"
     method4: auto
     autoconnect: true
+    autoconnect_retries: 10
     state: present
-
-# Set WiFi retry count to 10
-- name: Set WiFi connection retries to 10
-  become: true
-  ansible.builtin.command:
-    cmd: nmcli connection modify "UniversityOfWaterloo" connection.autoconnect-retries 10
-  changed_when: false
