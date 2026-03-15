@@ -60,6 +60,7 @@
     method4: auto
     autoconnect: true
     state: present
+    autoconnect_retries: 0
 
 # Configure WiFi connection to UniversityOfWaterloo (open, no password)
 - name: Configure WiFi connection to UniversityOfWaterloo
