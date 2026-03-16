@@ -1,0 +1,44 @@
+- name: Define omnibus image list
+  ansible.builtin.set_fact:
+    omnibus_images:
+      - ghcr.io/waterloo-rocketry/omnibus-server:main
+      - ghcr.io/waterloo-rocketry/omnibus-globallog:main
+      - ghcr.io/waterloo-rocketry/omnibus-source-ljm:main
+    omnibus_deploy_dir: "/home/{{ ansible_user }}/omnibus-deploy"
+    omnibus_images_dir: "/home/{{ ansible_user }}/omnibus-images"
+
+- name: Create omnibus deployment directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ omnibus_deploy_dir }}"
+    - "{{ omnibus_deploy_dir }}/config"
+    - "{{ omnibus_deploy_dir }}/data"
+    - "{{ omnibus_images_dir }}"
+
+- name: Copy docker-compose.yml to deployment directory
+  ansible.builtin.copy:
+    src: services/omnibus.yml
+    dest: "{{ omnibus_deploy_dir }}/docker-compose.yml"
+    mode: "0644"
+
+- name: Pull omnibus Docker images
+  community.docker.docker_image:
+    name: "{{ item }}"
+    source: pull
+  loop: "{{ omnibus_images }}"
+
+- name: Save omnibus Docker images to disk
+  community.docker.docker_image:
+    name: "{{ item }}"
+    archive_path: "{{ omnibus_images_dir }}/{{ item | regex_replace('.+/', '') | regex_replace(':', '-') }}.tar"
+    source: local
+  loop: "{{ omnibus_images }}"
+
+- name: Compress saved Docker images
+  ansible.builtin.command:
+    cmd: "gzip -f {{ omnibus_images_dir }}/{{ item | regex_replace('.+/', '') | regex_replace(':', '-') }}.tar"
+    creates: "{{ omnibus_images_dir }}/{{ item | regex_replace('.+/', '') | regex_replace(':', '-') }}.tar.gz"
+  loop: "{{ omnibus_images }}"

@@ -28,3 +28,7 @@
     - name: Docker
       ansible.builtin.include_tasks:
         file: tasks/docker.yml
+
+    - name: Omnibus
+      ansible.builtin.include_tasks:
+        file: tasks/omnibus.yml
