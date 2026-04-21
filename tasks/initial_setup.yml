@@ -13,10 +13,6 @@
     pkg:
       - git
 
-- name: Crontab - setup update and upgrade
+- name: Install `uv`
   become: true
-  cron:
-    name: "Update and upgrade"
-    minute: "0"
-    hour: "5"
-    job: "apt update -q -y && apt dist-upgrade -q -y"
+  shell: curl -LsSf https://astral.sh/uv/install.sh | sh
