@@ -69,8 +69,7 @@
     conn_name: "UniversityOfWaterloo"
     ifname: "*"
     type: wifi
-    wifi:
-      ssid: "UniversityOfWaterloo"
+    ssid: "UniversityOfWaterloo"
     method4: auto
     autoconnect: true
     autoconnect_retries: 10
