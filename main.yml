@@ -10,10 +10,6 @@
       ansible.builtin.include_tasks:
         file: tasks/initial_setup.yml
 
-    - name: SWAP
-      ansible.builtin.include_tasks:
-        file: tasks/swap.yml
-
     - name: GIT
       ansible.builtin.include_tasks:
         file: tasks/git.yml
