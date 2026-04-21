@@ -1,5 +1,6 @@
 - name: Main
-  hosts: vms
+  hosts:
+    localhost:
   vars:
     swap_size_mb: 1024
     git_user_email: "contact@waterloorocketry.com"
