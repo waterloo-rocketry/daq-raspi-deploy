@@ -1,11 +1,14 @@
 - name: Main
   hosts: all
   vars:
-    swap_size_mb: 1024
     git_user_email: "contact@waterloorocketry.com"
     git_user_name: "Waterloo Rocketry"
 
   tasks:
+    - name: NetworkManager
+      ansible.builtin.include_tasks:
+        file: tasks/networkmanager.yml
+
     - name: Initial setup
       ansible.builtin.include_tasks:
         file: tasks/initial_setup.yml
@@ -13,10 +16,6 @@
     - name: GIT
       ansible.builtin.include_tasks:
         file: tasks/git.yml
-
-    - name: NetworkManager
-      ansible.builtin.include_tasks:
-        file: tasks/networkmanager.yml
 
     - name: Docker
       ansible.builtin.include_tasks:

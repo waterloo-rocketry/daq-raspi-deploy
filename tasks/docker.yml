@@ -8,19 +8,18 @@
       - ca-certificates
       - curl
       - gnupg
+      - python3-debian
 
-- name: Install docker repo key to apt
+- name: Install docker repo to apt
   become: true
-  apt_key:
-    url: https://download.docker.com/linux/debian/gpg
-
-- shell: lsb_release -sc
-  register: os_codename
-
-- name: Install docker repository to apt
-  become: true
-  apt_repository:
-    repo: deb [arch=arm64] https://download.docker.com/linux/debian "{{ os_codename.stdout }}" stable
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: [deb]
+    uris: "https://download.docker.com/linux/debian"
+    suites: "{{ ansible_distribution_release }}"
+    components: [stable]
+    signed_by: "https://download.docker.com/linux/ubuntu/gpg"
+    architectures: arm64
     state: present
 
 - name: Install docker packages

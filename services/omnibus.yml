@@ -1,24 +1,47 @@
 services:
   omnibus-server:
-    image: ghcr.io/waterloo-rocketry/omnibus-server:main
+    image: ghcr.io/waterloo-rocketry/omnibus-server@sha256:ab3f39f85b1579bc9bab5d8d8411ba71fd1a99e6e4d18570f17269ecd0283f7c
     network_mode: host
     restart: unless-stopped
 
-  omnibus-globallog:
-    image: ghcr.io/waterloo-rocketry/omnibus-globallog:main
-    network_mode: host
-    restart: unless-stopped
-    depends_on:
-      - omnibus-server
-    volumes:
-      - ./data:/data
-    command: ["--outfolder", "/data"]
+#  omnibus-globallog:
+#    image: ghcr.io/waterloo-rocketry/omnibus-globallog@sha256:d8177d0ac35147e10955b729e27f527c8f85954aedcb98a5669ac3eb1608f4f0
+#    network_mode: host
+#    restart: unless-stopped
+#    depends_on:
+#      - omnibus-server
+#    volumes:
+#      - ./data:/data
+#    command: ["--outfolder", "/data"]
 
   omnibus-source-ljm:
-    image: ghcr.io/waterloo-rocketry/omnibus-source-ljm:main
+    image: ghcr.io/waterloo-rocketry/omnibus-source-ljm@sha256:04bcc0144c73d34ea9a8dbd9906e26ce4e8baeb0cdd579dcad9b9a36ac1e23dc
     network_mode: host
     restart: unless-stopped
     depends_on:
       - omnibus-server
     volumes:
       - ./config:/config
+  
+#  omnibus-ws-bridge:
+#    image: docker pull ghcr.io/waterloo-rocketry/omnibus-ws-bridge@sha256:6869d3eaafd9ac3b8d249c03d26a95fd37e164f23b3b395ff02df65f668b203c 
+#    network_mode: host
+#    restart: unless-stopped
+#    depends_on:
+#      - omnibus-server
+#      - omnibus-ws-server
+#
+#  omnibus-ws-server:
+#    image: ghcr.io/waterloo-rocketry/omnibus-ws-server@sha256:85d1b95627d1fd434befc9444bb1ef9d58864854879d9df97d10298643bc312a 
+#    network_mode: host
+#    restart: unless-stopped
+#    depends_on:
+#      - omnibus-server
+
+  daqms:
+    image: ghcr.io/waterloo-rocketry/omnibus-daqms@sha256:6a76ccfec78fc2ead025056f683214c675a6e91e5515403c973389a67a41562b
+    restart: unless-stopped
+    depends_on:
+      - omnibus-server
+    ports:
+      8080:8080

@@ -14,5 +14,4 @@
       - git
 
 - name: Install `uv`
-  become: true
   shell: curl -LsSf https://astral.sh/uv/install.sh | sh
