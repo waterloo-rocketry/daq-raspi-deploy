@@ -24,6 +24,12 @@
     dest: "{{ omnibus_deploy_dir }}/docker-compose.yml"
     mode: "0644"
 
+- name: Copy config.py to config directory
+  ansible.builtin.copy:
+    src: services/config.py
+    dest: "{{ omnibus_deploy_dir }}/config/config.py"
+    mode: "0644"
+
 - name: Pull omnibus Docker images
   community.docker.docker_image:
     name: "{{ item }}"
