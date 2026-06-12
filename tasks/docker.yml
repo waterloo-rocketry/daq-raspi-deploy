@@ -41,7 +41,7 @@
   become: true
   service:
     name: docker
-    state: restarted
+    state: started 
     enabled: yes
     
 - name: Create "docker" group

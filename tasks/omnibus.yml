@@ -1,9 +1,13 @@
 - name: Define omnibus image list
   ansible.builtin.set_fact:
+    # TODO: Use SHA256 hashes here too instead of tags
     omnibus_images:
       - ghcr.io/waterloo-rocketry/omnibus-server:main
       - ghcr.io/waterloo-rocketry/omnibus-globallog:main
       - ghcr.io/waterloo-rocketry/omnibus-source-ljm:main
+      - ghcr.io/waterloo-rocketry/omnibus-ws-server:main
+      - ghcr.io/waterloo-rocketry/omnibus-ws-bridge:main
+      - ghcr.io/waterloo-rocketry/omnibus-daqms:latest
     omnibus_deploy_dir: "/home/{{ ansible_user }}/omnibus-deploy"
     omnibus_images_dir: "/home/{{ ansible_user }}/omnibus-images"
 
@@ -24,10 +28,10 @@
     dest: "{{ omnibus_deploy_dir }}/docker-compose.yml"
     mode: "0644"
 
-- name: Copy config.py to config directory
+- name: Copy config.py.example to config directory
   ansible.builtin.copy:
     src: services/config.py
-    dest: "{{ omnibus_deploy_dir }}/config/config.py"
+    dest: "{{ omnibus_deploy_dir }}/config/config.py.example"
     mode: "0644"
 
 - name: Pull omnibus Docker images

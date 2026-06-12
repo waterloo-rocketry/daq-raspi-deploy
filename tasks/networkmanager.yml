@@ -54,7 +54,7 @@
     route_metric4: 650
     route_metric6: 650
 
-Configure WiFi connection to UniversityOfWaterloo (open, no password)
+# Configure WiFi connection to UniversityOfWaterloo (open, no password)
 - name: Configure WiFi connection to UniversityOfWaterloo
   become: true
   community.general.nmcli:
