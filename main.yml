@@ -13,6 +13,10 @@
       ansible.builtin.include_tasks:
         file: tasks/initial_setup.yml
 
+    - name: NTP Server
+      ansible.builtin.include_tasks:
+        file: tasks/ntpd.yml
+
     - name: GIT
       ansible.builtin.include_tasks:
         file: tasks/git.yml
