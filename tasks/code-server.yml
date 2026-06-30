@@ -1,0 +1,19 @@
+- name: Define omnibus image list
+  ansible.builtin.set_fact:
+    code_server_deploy_dir: "/home/{{ ansible_user }}/code-server-deploy"
+
+- name: Copy docker-compose.yml to deployment directory
+  ansible.builtin.copy:
+    src: services/code-server.yml
+    dest: "{{ code_server_deploy_dir }}/docker-compose.yml"
+    mode: "0644"
+
+- name: Tear down existing containers (docker compose down)
+  community.docker.docker_compose_v2:
+    project_src: "{{ code_server_deploy_dir }}"
+    state: absent
+
+- name: Start containers up (docker compose up -d)
+  community.docker.docker_compose_v2:
+    project_src: "{{ code_server_deploy_dir }}"
+    state: present

@@ -34,11 +34,15 @@
     dest: "{{ omnibus_deploy_dir }}/config/config.py.example"
     mode: "0644"
 
-- name: Pull omnibus Docker images
-  community.docker.docker_image:
-    name: "{{ item }}"
-    source: pull
-  loop: "{{ omnibus_images }}"
+- name: Tear down existing containers (docker compose down)
+  community.docker.docker_compose_v2:
+    project_src: "{{ omnibus_deploy_dir }}"
+    state: absent
+
+- name: Start containers up in detached mode (docker compose up -d)
+  community.docker.docker_compose_v2:
+    project_src: "{{ omnibus_deploy_dir }}" 
+    state: present
 
 - name: Save omnibus Docker images to disk
   community.docker.docker_image:
@@ -47,8 +51,3 @@
     source: local
   loop: "{{ omnibus_images }}"
 
-- name: Compress saved Docker images
-  ansible.builtin.command:
-    cmd: "gzip -f {{ omnibus_images_dir }}/{{ item | regex_replace('.+/', '') | regex_replace(':', '-') }}.tar"
-    creates: "{{ omnibus_images_dir }}/{{ item | regex_replace('.+/', '') | regex_replace(':', '-') }}.tar.gz"
-  loop: "{{ omnibus_images }}"
