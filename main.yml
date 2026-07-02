@@ -28,3 +28,7 @@
     - name: Omnibus
       ansible.builtin.include_tasks:
         file: tasks/omnibus.yml
+
+    - name: Code Server
+      ansible.builtin.include_tasks:
+        file: tasks/code-server.yml
