@@ -1,13 +1,13 @@
 - name: Define omnibus image list
   ansible.builtin.set_fact:
-    # TODO: Use SHA256 hashes here too instead of tags
     omnibus_images:
-      - ghcr.io/waterloo-rocketry/omnibus-server:main
-      - ghcr.io/waterloo-rocketry/omnibus-globallog:main
-      - ghcr.io/waterloo-rocketry/omnibus-source-ljm:main
-      - ghcr.io/waterloo-rocketry/omnibus-ws-server:main
-      - ghcr.io/waterloo-rocketry/omnibus-ws-bridge:main
-      - ghcr.io/waterloo-rocketry/omnibus-daqms:latest
+      - ghcr.io/waterloo-rocketry/omnibus-globallog@sha256:2c0b344551f86ed5631d0e086559ef42a38e26e788c047f35cb58e87e261ab56
+      - ghcr.io/waterloo-rocketry/omnibus-server@sha256:306aabd78e4fadd45ec6878de40925ed21e5844b7fb0a67d065322e2433650e1
+      - ghcr.io/waterloo-rocketry/omnibus-source-ljm@sha256:56b8f1e06306b9c55cae3129503058f480f3aef43e614924e5738daccffd0558
+      - ghcr.io/waterloo-rocketry/omnibus-ws-bridge@sha256:e2c98ba03d2e724ebf6d8cfb352100182c51954b00be9f97f00da193b43bd0e5
+      - ghcr.io/waterloo-rocketry/omnibus-ws-server@sha256:f846b28090aeae7bb3b69b26cb4a53bc133a9e81fa26b3f5d8abef3afc205d68
+      - ghcr.io/waterloo-rocketry/omnibus-source-parsley@sha256:9589af3a31dea4c6b4c65c31b6923b7206f31cb9be262e547f30317fb2322ccd
+      - ghcr.io/waterloo-rocketry/omnibus-daqms@sha256:38e741dbac64d848e1579537990f25ea66c8728f21cc98420ac9314eba1f23d4
     omnibus_deploy_dir: "/home/{{ ansible_user }}/omnibus-deploy"
     omnibus_images_dir: "/home/{{ ansible_user }}/omnibus-images"
 
@@ -34,20 +34,35 @@
     dest: "{{ omnibus_deploy_dir }}/config/config.py.example"
     mode: "0644"
 
-- name: Tear down existing containers (docker compose down)
+- name: Tear down existing containers
   community.docker.docker_compose_v2:
     project_src: "{{ omnibus_deploy_dir }}"
     state: absent
 
-- name: Start containers up in detached mode (docker compose up -d)
+- name: Start containers up in detached mode
   community.docker.docker_compose_v2:
     project_src: "{{ omnibus_deploy_dir }}" 
     state: present
 
-- name: Save omnibus Docker images to disk
-  community.docker.docker_image:
+- name: Get Omnibus image info
+  community.docker.docker_image_info:
     name: "{{ item }}"
-    archive_path: "{{ omnibus_images_dir }}/{{ item | regex_replace('.+/', '') | regex_replace(':', '-') }}.tar"
-    source: local
   loop: "{{ omnibus_images }}"
+  register: omnibus_image_info
 
+- name: Ensure each omnibus image resolved locally
+  ansible.builtin.assert:
+    that:
+      - item.images | length == 1
+    fail_msg: "Expected exactly one local Docker image for {{ item.item }}, found {{ item.images | length }}"
+  loop: "{{ omnibus_image_info.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Save omnibus Docker images to disk
+  community.docker.docker_image_export:
+    name: "{{ item.images[0].Id }}"
+    path: "{{ omnibus_images_dir }}/{{ item.item | regex_replace('.+/', '') | regex_replace(':', '-') | regex_replace('@', '-') }}.tar"
+  loop: "{{ omnibus_image_info.results }}"
+  loop_control:
+    label: "{{ item.item }}"

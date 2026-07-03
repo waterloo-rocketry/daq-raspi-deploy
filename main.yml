@@ -32,3 +32,10 @@
     - name: Code Server
       ansible.builtin.include_tasks:
         file: tasks/code-server.yml
+
+  roles:
+    - role: artis3n.tailscale.machine
+      tags: ["tailscale"]
+      vars:
+        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
+
