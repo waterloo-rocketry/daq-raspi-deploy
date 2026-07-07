@@ -18,6 +18,13 @@
     state: present
   become: true
 
+- name: Stop and disable systemd-timesyncd
+  ansible.builtin.service:
+    name: systemd-timesyncd
+    state: stopped
+    enabled: false
+  become: true
+
 - name: Start and enable chrony 
   ansible.builtin.service:
     name: chronyd
