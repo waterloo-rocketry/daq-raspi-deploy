@@ -11,6 +11,13 @@
     state: present
   become: true
 
+- name: Configure Chrony to broadcast localtime even offline 
+  ansible.builtin.lineinfile:
+    path: /etc/chrony/chrony.conf
+    line: "local stratum 10"
+    state: present
+  become: true
+
 - name: Start and enable chrony 
   ansible.builtin.service:
     name: chronyd
