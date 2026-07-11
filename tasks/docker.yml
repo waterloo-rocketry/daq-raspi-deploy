@@ -32,10 +32,12 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
+  register: docker_packages
 
 - name: Reboot the machine to make the docker.service start # see: https://bbs.archlinux.org/viewtopic.php?id=267694
   become: true
   reboot:
+  when: docker_packages is changed
 
 - name: Enable docker.service
   become: true

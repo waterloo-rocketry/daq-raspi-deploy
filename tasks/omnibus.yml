@@ -1,7 +1,7 @@
 - name: Define omnibus image list
   ansible.builtin.set_fact:
     omnibus_images:
-      - ghcr.io/waterloo-rocketry/omnibus-globallog@sha256:2c0b344551f86ed5631d0e086559ef42a38e26e788c047f35cb58e87e261ab56
+      # - ghcr.io/waterloo-rocketry/omnibus-globallog@sha256:2c0b344551f86ed5631d0e086559ef42a38e26e788c047f35cb58e87e261ab56
       - ghcr.io/waterloo-rocketry/omnibus-server@sha256:306aabd78e4fadd45ec6878de40925ed21e5844b7fb0a67d065322e2433650e1
       - ghcr.io/waterloo-rocketry/omnibus-source-ljm@sha256:56b8f1e06306b9c55cae3129503058f480f3aef43e614924e5738daccffd0558
       - ghcr.io/waterloo-rocketry/omnibus-ws-bridge@sha256:e2c98ba03d2e724ebf6d8cfb352100182c51954b00be9f97f00da193b43bd0e5
@@ -11,6 +11,24 @@
     omnibus_deploy_dir: "/home/{{ ansible_user }}/omnibus-deploy"
     omnibus_images_dir: "/home/{{ ansible_user }}/omnibus-images"
 
+- name: Check for existing omnibus deployment directory
+  ansible.builtin.stat:
+    path: "{{ omnibus_deploy_dir }}"
+  register: omnibus_deploy_dir_stat
+
+- name: Check for existing omnibus Compose file
+  ansible.builtin.stat:
+    path: "{{ omnibus_deploy_dir }}/docker-compose.yml"
+  register: omnibus_compose_file_stat
+
+- name: Tear down existing omnibus containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ omnibus_deploy_dir }}"
+    state: absent
+  when:
+    - omnibus_deploy_dir_stat.stat.isdir | default(false)
+    - omnibus_compose_file_stat.stat.isreg | default(false)
+
 - name: Create omnibus deployment directories
   file:
     path: "{{ item }}"
@@ -19,7 +37,7 @@
   loop:
     - "{{ omnibus_deploy_dir }}"
     - "{{ omnibus_deploy_dir }}/config"
-    - "{{ omnibus_deploy_dir }}/data"
+    # - "{{ omnibus_deploy_dir }}/data"
     - "{{ omnibus_images_dir }}"
 
 - name: Copy docker-compose.yml to deployment directory
@@ -33,11 +51,6 @@
     src: services/config.py
     dest: "{{ omnibus_deploy_dir }}/config/config.py.example"
     mode: "0644"
-
-- name: Tear down existing containers
-  community.docker.docker_compose_v2:
-    project_src: "{{ omnibus_deploy_dir }}"
-    state: absent
 
 - name: Start containers up in detached mode
   community.docker.docker_compose_v2:
@@ -61,8 +74,11 @@
 
 - name: Save omnibus Docker images to disk
   community.docker.docker_image_export:
-    name: "{{ item.images[0].Id }}"
+    name:
+      - "{{ item.images[0].Id }}"
     path: "{{ omnibus_images_dir }}/{{ item.item | regex_replace('.+/', '') | regex_replace(':', '-') | regex_replace('@', '-') }}.tar"
+    # Archives exported by image ID have no RepoTags, which the module cannot inspect.
+    force: true
   loop: "{{ omnibus_image_info.results }}"
   loop_control:
     label: "{{ item.item }}"

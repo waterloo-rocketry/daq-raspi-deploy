@@ -4,15 +4,15 @@ services:
     network_mode: host
     restart: unless-stopped
 
-  omnibus-globallog:
-    image: ghcr.io/waterloo-rocketry/omnibus-globallog@sha256:2c0b344551f86ed5631d0e086559ef42a38e26e788c047f35cb58e87e261ab56
-    network_mode: host
-    restart: unless-stopped
-    depends_on:
-      - omnibus-server
-    volumes:
-      - ./data:/data
-    command: ["--outfolder", "/data"]
+  # omnibus-globallog:
+  #   image: ghcr.io/waterloo-rocketry/omnibus-globallog@sha256:2c0b344551f86ed5631d0e086559ef42a38e26e788c047f35cb58e87e261ab56
+  #   network_mode: host
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - omnibus-server
+  #   volumes:
+  #     - ./data:/data
+  #   command: ["--outfolder", "/data"]
 
   omnibus-source-ljm:
     image: ghcr.io/waterloo-rocketry/omnibus-source-ljm@sha256:56b8f1e06306b9c55cae3129503058f480f3aef43e614924e5738daccffd0558 

@@ -4,11 +4,12 @@
     git_user_email: "contact@waterloorocketry.com"
     git_user_name: "Waterloo Rocketry"
 
-  tasks:
+  pre_tasks:
     - name: NetworkManager
       ansible.builtin.include_tasks:
         file: tasks/networkmanager.yml
 
+  tasks:
     - name: Initial setup
       ansible.builtin.include_tasks:
         file: tasks/initial_setup.yml
@@ -37,5 +38,6 @@
     - role: artis3n.tailscale.machine
       tags: ["tailscale"]
       vars:
-        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
-
+        tailscale_up_skip: "{{ lookup('env', 'TAILSCALE_KEY') | default('', true) == '' }}"
+        # Safely pass the key if it does exist
+        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') | default(omit) }}"

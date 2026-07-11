@@ -13,29 +13,32 @@ from calibration import Connection, LinearCalibration, Sensor, ThermistorCalibra
 SCANS_PER_READ = 25
 SCAN_RATE = 1000
 
-
 def setup():
     """
     Setup the sensors.
     """
     # IFM (round)
+    # B1 P1
     Sensor("[OPT-101] Ox Fill", "AIN87", 10, Connection.SINGLE,
           LinearCalibration(1/100*1450/0.016, -0.004*1450/0.016, "psi"))
-    Sensor("[OPT 102] Ox Fill", "AIN95", 10, Connection.SINGLE,
+    Sensor("[OPT-102] Ox Fill", "AIN95", 10, Connection.SINGLE,
           LinearCalibration(1/100*1450/0.016, -0.004*1450/0.016, "psi"))
+
+    # B1 P2
     Sensor("[NPT-201] N2 Fill", "AIN86", 10, Connection.SINGLE,
           LinearCalibration(1/100*1450/0.016, -0.004*1450/0.016, "psi"))
     Sensor("[NPT-202] Pneumatics", "AIN94", 10, Connection.SINGLE,
           LinearCalibration(1/100*1450/0.016, -0.004*1450/0.016, "psi"))
-    Sensor("[OPT-301] Ox Tank", "AIN85", 10, Connection.SINGLE,
-          LinearCalibration(1/100*1450/0.016, -0.004*1450/0.016, "psi"))
-    Sensor("[FPT-301] Fuel Tank", "AIN93", 10, Connection.SINGLE,
-          LinearCalibration(1/100*1450/0.016, -0.004*1450/0.016, "psi"))
-    Sensor("[OPT-302] Ox Manifold", "AIN84", 10, Connection.SINGLE,
-          LinearCalibration(1/100*1450/0.016, -0.004*1450/0.016, "psi"))
-    Sensor("[FPT-302] Fuel Manifold", "AIN92", 10, Connection.SINGLE,
-          LinearCalibration(1/100*1450/0.016, -0.004*1450/0.016, "psi"))
-    # TDM (square)
-    #Sensor("[OPT 101] Ox Fill (psi)", "AIN86", 10, Connection.SINGLE,
-    #      LinearCalibration(1/100*3000/0.016, -0.004*3000/0.016, "psi"))
+    # TDM
+    # B2 P3 TDM
+    # Sensor("[CDPT-401] CO2 Fill", "AIN82", 10, Connection.SINGLE,
+    #       LinearCalibration(1/100*3000/0.016, -0.004*3000/0.016, "psi"))
+
+    # Kulite ETM-375-70BARSG Pressure Transucer
+    # 0-70bar (~1000 psi), converted to PSI, 0-5V output
+    # B4 P1
+    Sensor("[OPT-301] Ox Tank", "AIN70", 10, Connection.DIFFERENTIAL,
+          LinearCalibration(70/5 * 14.5038, 0, "psi"))
+    Sensor("[FPT-301] Fuel Tank", "AIN69", 10, Connection.DIFFERENTIAL,
+          LinearCalibration(70/5 * 14.5038, 0, "psi"))
 
