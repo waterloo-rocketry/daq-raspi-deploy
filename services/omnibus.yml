@@ -1,21 +1,21 @@
 services:
   omnibus-server:
-    image: ghcr.io/waterloo-rocketry/omnibus-server@sha256:306aabd78e4fadd45ec6878de40925ed21e5844b7fb0a67d065322e2433650e1
+    image: ghcr.io/waterloo-rocketry/omnibus-server@sha256:104f969857a4c61a70a4f0621c11af9feafccf94775ef3ce185310f8eb1c967c
     network_mode: host
     restart: unless-stopped
 
-  # omnibus-globallog:
-  #   image: ghcr.io/waterloo-rocketry/omnibus-globallog@sha256:2c0b344551f86ed5631d0e086559ef42a38e26e788c047f35cb58e87e261ab56
-  #   network_mode: host
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - omnibus-server
-  #   volumes:
-  #     - ./data:/data
-  #   command: ["--outfolder", "/data"]
+  omnibus-globallog:
+    image: ghcr.io/waterloo-rocketry/omnibus-globallog@sha256:6fcedde3ea72b0d49ffd7812a4ca76c21cbfb0a0e34a48e0c646574c7c8b1858
+    network_mode: host
+    restart: unless-stopped
+    depends_on:
+      - omnibus-server
+    volumes:
+      - ./data:/data
+    command: ["--outfolder", "/data"]
 
   omnibus-source-ljm:
-    image: ghcr.io/waterloo-rocketry/omnibus-source-ljm@sha256:56b8f1e06306b9c55cae3129503058f480f3aef43e614924e5738daccffd0558 
+    image: ghcr.io/waterloo-rocketry/omnibus-source-ljm@sha256:2c07aa238d4b8626712f984a8a817d04ab988151993d71eb41273b8c2fb77be2
     network_mode: host
     restart: unless-stopped
     depends_on:
@@ -24,7 +24,7 @@ services:
       - ./config:/config
   
   omnibus-ws-bridge:
-    image: ghcr.io/waterloo-rocketry/omnibus-ws-bridge@sha256:e2c98ba03d2e724ebf6d8cfb352100182c51954b00be9f97f00da193b43bd0e5 
+    image: ghcr.io/waterloo-rocketry/omnibus-ws-bridge@sha256:c20218eda368626e2be25eb6d4608ee69205ff63e12e3de31aeddcc127ec7fcc
     network_mode: host
     restart: unless-stopped
     depends_on:
@@ -32,7 +32,7 @@ services:
       - omnibus-ws-server
 
   omnibus-ws-server:
-    image: ghcr.io/waterloo-rocketry/omnibus-ws-server@sha256:f846b28090aeae7bb3b69b26cb4a53bc133a9e81fa26b3f5d8abef3afc205d68
+    image: ghcr.io/waterloo-rocketry/omnibus-ws-server@sha256:b43dff41c05fc83e85694dfef9e3e5a8a3d28a0ab90db31fe08c1d3fee127acf
     network_mode: host
     restart: unless-stopped
     depends_on:
@@ -48,7 +48,7 @@ services:
 
   # /dev/serial/by-path/platform-xhci-hcd.0-usb-0:1.1:1.0 is the Injector CAN support board, USB Port 1 on hub
   parsley-source-injector:
-    image: ghcr.io/waterloo-rocketry/omnibus-source-parsley@sha256:9589af3a31dea4c6b4c65c31b6923b7206f31cb9be262e547f30317fb2322ccd
+    image: ghcr.io/waterloo-rocketry/omnibus-source-parsley@sha256:1c1fde8bfa0a576516e8b5eebb0b8d6aa81c2e184afdb6602ea3d9c707f61674
     restart: unless-stopped
     depends_on:
       - omnibus-server
@@ -61,7 +61,7 @@ services:
 
   # /dev/serial/by-path/platform-xhci-hcd.0-usb-0:1.2:1.0 is the Upper CAN support board, USB Port 2 on hub
   parsley-source-upper:
-    image: ghcr.io/waterloo-rocketry/omnibus-source-parsley@sha256:9589af3a31dea4c6b4c65c31b6923b7206f31cb9be262e547f30317fb2322ccd
+    image: ghcr.io/waterloo-rocketry/omnibus-source-parsley@sha256:1c1fde8bfa0a576516e8b5eebb0b8d6aa81c2e184afdb6602ea3d9c707f61674
     restart: unless-stopped
     depends_on:
       - omnibus-server

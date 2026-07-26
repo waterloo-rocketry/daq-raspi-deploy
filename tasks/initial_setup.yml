@@ -12,6 +12,7 @@
   apt:
     pkg:
       - git
+      - neovim
 
 - name: Install `uv`
   shell: curl -LsSf https://astral.sh/uv/install.sh | sh
