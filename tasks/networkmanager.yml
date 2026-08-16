@@ -52,6 +52,23 @@
     autoconnect_retries: 0
     route_metric4: 650
     route_metric6: 650
+  register: nm_wired_config
+
+# Cycle the wired connection so config changes actually take effect
+- name: Bring down Wired connection 1
+  become: true
+  community.general.nmcli:
+    conn_name: "Wired connection 1"
+    state: down
+  when: nm_wired_config.changed
+  ignore_errors: true
+
+- name: Bring up Wired connection 1
+  become: true
+  community.general.nmcli:
+    conn_name: "Wired connection 1"
+    state: up
+  when: nm_wired_config.changed
 
 # Configure WiFi connection to UniversityOfWaterloo (open, no password)
 - name: Configure WiFi connection to UniversityOfWaterloo
