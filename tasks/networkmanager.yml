@@ -50,7 +50,6 @@
     autoconnect: true
     state: present
     autoconnect_retries: 0
-    never_default4: true
     route_metric4: 650
     route_metric6: 650
 
