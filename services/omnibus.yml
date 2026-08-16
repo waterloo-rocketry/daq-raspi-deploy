@@ -39,7 +39,7 @@ services:
       - omnibus-server
 
   daqms:
-    image: ghcr.io/waterloo-rocketry/omnibus-daqms@sha256:38e741dbac64d848e1579537990f25ea66c8728f21cc98420ac9314eba1f23d4 
+    image: ghcr.io/waterloo-rocketry/omnibus-daqms@sha256:433a4c4ea0bddd2d25fba356a3f2bb89c38214ef159190182886d061af331646
     restart: unless-stopped
     depends_on:
       - omnibus-server
